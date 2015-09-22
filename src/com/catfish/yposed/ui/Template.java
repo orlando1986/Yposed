@@ -1,4 +1,4 @@
-package com.catfish.yposed;
+package com.catfish.yposed.ui;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -7,30 +7,25 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.res.AssetManager;
-import android.os.Bundle;
 import android.util.Log;
 import dalvik.system.DexClassLoader;
 
-public class MainActivity extends Activity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        transferFiles("hook.dex");
-        transferFiles("libhook.so");
-        loadDex();
+public class Template {
+    private Template(Context context) {
+        transferFiles(context, "hook.dex");
+        transferFiles(context, "libhook.so");
+        loadDex(context);
     }
 
-    private void loadDex() {
-        String path = getFilesDir().toString();
-        String dex =  path + "/hook.dex";
-        String lib =  path + "/libhook.so";
-        DexClassLoader cl = new DexClassLoader(dex, getCacheDir().toString(), lib, ClassLoader.getSystemClassLoader());
+    private void loadDex(Context context) {
+        String path = context.getFilesDir().toString();
+        String dex = path + "/hook.dex";
+        String lib = path + "/libhook.so";
+        DexClassLoader cl = new DexClassLoader(dex, context.getCacheDir().toString(), lib, ClassLoader.getSystemClassLoader());
         try {
-            Class<?> hm = Class.forName("com.catfish.HookManager", false, cl);
+            Class<?> hm = Class.forName("com.catfish.yposed.HookManager", false, cl);
             Method m = hm.getDeclaredMethod("start", (Class[]) null);
             m.invoke(null);
         } catch (ClassNotFoundException e) {
@@ -46,12 +41,12 @@ public class MainActivity extends Activity {
         }
     }
 
-    private final void transferFiles(String filename) {
-        AssetManager assetManager = getAssets();
+    private final void transferFiles(Context context, String filename) {
+        AssetManager assetManager = context.getAssets();
         try {
-            String path = getFilesDir() + "/";
+            String path = context.getFilesDir() + "/";
             File file = new File(path + filename);
-            File data = new File(getPackageCodePath());
+            File data = new File(context.getPackageCodePath());
             if (file.exists() && (file.lastModified() > data.lastModified())) {
                 return;
             }
