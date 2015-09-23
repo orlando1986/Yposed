@@ -20,19 +20,20 @@ public class MainActivity extends Activity {
         HookManager.registerCallbackClass(HookCallbacks.class);
         Method m;
         try {
-            m = getClass().getDeclaredMethod("victim", (Class[])null);
+            m = getClass().getDeclaredMethod("victim", int.class, long.class, char.class);
             HookManager.replaceMethod(m, "victim1");
         } catch (NoSuchMethodException e) {
-            Log.d(TAG, e.toString());
+            Log.e(TAG, e.toString());
         }
     }
 
     public void onClick(View view) {
         Log.d(TAG, "onClick");
-        victim();
+        Log.d(TAG, "get: " + victim(1, 123456789098765432l, 'x'));
     }
 
-    private void victim() {
+    private long victim(int a, long b, char c) {
         Log.d(TAG, "victim");
+        return b;
     }
 }

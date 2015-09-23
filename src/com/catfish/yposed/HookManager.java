@@ -49,7 +49,8 @@ public class HookManager {
             throw new RuntimeException(methodName + " has not been used to hook, please verify");
         }
         try {
-            return m.invoke(receiver, receiver);
+            m.setAccessible(true);
+            return m.invoke(receiver, args);
         } catch (IllegalAccessException e) {
             Log.e(TAG, e.toString());
         } catch (IllegalArgumentException e) {
@@ -58,6 +59,31 @@ public class HookManager {
             Log.e(TAG, e.toString());
         }
         return null;
+    }
+
+    public static Object invokeOriginStatic(String methodName, Object... args) {
+        Method m = sMethodCache.get(methodName);
+        if (methodName == null) {
+            throw new RuntimeException(methodName + " has not been used to hook, please verify");
+        }
+        try {
+            m.setAccessible(true);
+            return m.invoke(null, args);
+        } catch (IllegalAccessException e) {
+            Log.e(TAG, e.toString());
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, e.toString());
+        } catch (InvocationTargetException e) {
+            Log.e(TAG, e.toString());
+        }
+        return null;
+    }
+
+    public static Object retrieveReceiver(Object thiz, boolean isStatic) {
+        if (isStatic) {
+            return null;
+        }
+        return (Object) thiz;
     }
 
     private static native void hookYposedMethod(Method origin, Method proxy, boolean isStatic);

@@ -1,15 +1,16 @@
 package com.catfish.yposed.ui;
 
-import com.catfish.yposed.HookManager;
-
 import android.util.Log;
+
+import com.catfish.yposed.HookManager;
 
 public class HookCallbacks {
     private static final String TAG = "catfish";
 
-    public void victim1(Object receiver) {
-        Log.e(TAG, "hook victim called: " + receiver);
+    public long victim1(int a, long b, char c) {
+        Object receiver = HookManager.retrieveReceiver(this, false);
+        Log.e(TAG, "hook victim called: " + receiver + ", a=" + a + ", b=" + b + ", c=" + c);
         System.gc();
-//        HookManager.invokeOriginVirtual("victim1", receiver, (Class[]) null);
+        return (Long) HookManager.invokeOriginVirtual("victim1", receiver, a, b, c);
     }
 }
