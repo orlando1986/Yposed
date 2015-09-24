@@ -15,17 +15,36 @@ public class HookManager {
 
     static {
         System.loadLibrary("hook");
+
+        String lib = "";
+        try {
+            Class<?> properties = Class.forName("android.os.SystemProperties");
+            Method get = properties.getDeclaredMethod("get", String.class, String.class);
+            lib = (String) get.invoke(null, "persist.sys.dalvik.vm.lib", "");
+        } catch (ClassNotFoundException e) {
+            Log.e(TAG, e.toString());
+        } catch (NoSuchMethodException e) {
+            Log.e(TAG, e.toString());
+        } catch (IllegalAccessException e) {
+            Log.e(TAG, e.toString());
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, e.toString());
+        } catch (InvocationTargetException e) {
+            Log.e(TAG, e.toString());
+        }
+
         int version = -1;
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT) {
             // dalvik vm
-        } else if (android.os.Build.VERSION.RELEASE.startsWith("4.4")) {
+        } else if (android.os.Build.VERSION.RELEASE.startsWith("4.4")
+                && "libart.so".equals(lib)) {
             version = 0;
         } else if (android.os.Build.VERSION.RELEASE.startsWith("5.0")) {
             version = 1;
         } else if (android.os.Build.VERSION.RELEASE.startsWith("5.1")) {
             version = 2;
         }
-        initParameter(version);
+        initVM(version);
     }
 
     public static void registerCallbackClass(Class<?> callback) {
@@ -99,5 +118,5 @@ public class HookManager {
 
     private static native void hookYposedMethod(Method origin, Method proxy, boolean isStatic);
 
-    private static native void initParameter(int version);
+    private static native void initVM(int version);
 }

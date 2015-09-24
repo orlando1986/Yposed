@@ -22,9 +22,7 @@ public class MainActivity extends Activity {
         Method m;
         try {
             m = getClass().getDeclaredMethod("victim", int.class, long.class, char.class);
-            HookManager.replaceMethod(m, "victim1");
-            m = getClass().getDeclaredMethod("victim_sub", int.class, long.class, char.class);
-            HookManager.replaceMethod(m, "victim_sub1");
+            HookManager.replaceMethod(m, "victim");
         } catch (NoSuchMethodException e) {
             Log.e(TAG, e.toString());
         }
@@ -33,7 +31,6 @@ public class MainActivity extends Activity {
     public void onClick(View view) {
         Log.d(TAG, "onClick");
         Log.d(TAG, "get: " + victim(1, 123456789098765432l, 'x'));
-        Log.d(TAG, "get: " + victim_sub(2, 123456789098765432l, 'y'));
     }
 
     private long victim(int a, long b, char c) {
@@ -41,8 +38,4 @@ public class MainActivity extends Activity {
         return b;
     }
 
-    private long victim_sub(int a, long b, char c) {
-        Log.d(TAG, "victim_sub");
-        return b;
-    }
 }

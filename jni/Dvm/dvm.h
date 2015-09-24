@@ -6,4 +6,4 @@
 
 #define JNIHOOK_CLASS "com/catfish/yposed/HookManager"
 
-void art_jni_onload(JNIEnv* env, int version);
+void dvm_jni_onload(JNIEnv* env);

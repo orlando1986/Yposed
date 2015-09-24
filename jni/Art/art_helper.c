@@ -7,12 +7,12 @@ static int gInterpretOffset = 0;
 static int gDexOffset = 0;
 static int gMethodSize = 0;
 
-void init_parameter(JNIEnv* env, jclass clazz, jint version) {
+void init_parameter(int version) {
 	void* handle = dlopen("libart.so", RTLD_LAZY | RTLD_GLOBAL);
 	art_quick_to_interpreter_bridge = (void (*)(void*)) dlsym(handle, "art_quick_to_interpreter_bridge");
 	artInterpreterToInterpreterBridge = (void (*)(void*)) dlsym(handle, "artInterpreterToInterpreterBridge");
 
-	switch((int) version) {
+	switch(version) {
 	case 0:
 		// for 4.4
 		gCodeOffset = 40;

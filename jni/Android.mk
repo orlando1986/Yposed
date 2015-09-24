@@ -5,6 +5,8 @@ LOCAL_SRC_FILES := \
     main.c \
     Art/art.c\
     Art/art_helper.c\
+    Dvm/dvm.c\
+    Dvm/dvm_helper.c\
 
 LOCAL_MODULE := libhook
 LOCAL_MODULE_TAGS := optional
