@@ -15,6 +15,17 @@ public class HookManager {
 
     static {
         System.loadLibrary("hook");
+        int version = -1;
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT) {
+            // dalvik vm
+        } else if (android.os.Build.VERSION.RELEASE.startsWith("4.4")) {
+            version = 0;
+        } else if (android.os.Build.VERSION.RELEASE.startsWith("5.0")) {
+            version = 1;
+        } else if (android.os.Build.VERSION.RELEASE.startsWith("5.1")) {
+            version = 2;
+        }
+        initParameter(version);
     }
 
     public static void registerCallbackClass(Class<?> callback) {
@@ -87,4 +98,6 @@ public class HookManager {
     }
 
     private static native void hookYposedMethod(Method origin, Method proxy, boolean isStatic);
+
+    private static native void initParameter(int version);
 }

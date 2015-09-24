@@ -1,7 +1,6 @@
 #include <jni.h>
 #include <dlfcn.h>
 #include "log.h"
-#include "asm_support.h"
 #include <stdio.h>
 #include <stdlib.h>
 

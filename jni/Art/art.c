@@ -12,6 +12,7 @@ static void hook_yposed_method(JNIEnv* env, jobject thiz, jobject method_origin,
 
 static JNINativeMethod gMethods[] = {
 		{ "hookYposedMethod", "(Ljava/lang/reflect/Method;Ljava/lang/reflect/Method;Z)V", (void*) hook_yposed_method },
+		{ "initParameter", "(I)V", (void*) init_parameter},
 		};
 
 
@@ -42,7 +43,6 @@ jint art_jni_onload(JavaVM* vm, void* reserved) {
 		return -1;
 	}
 	result = JNI_VERSION_1_4;
-	init_member(env);
 
 	return result;
 }
