@@ -6,7 +6,7 @@ LOCAL_SRC_FILES := \
     Art/art.c\
     Art/art_helper.c\
     Dvm/dvm.c\
-    Dvm/dvm_helper.c\
+    Dvm/dvm_helper.cpp\
 
 LOCAL_MODULE := libhook
 LOCAL_MODULE_TAGS := optional

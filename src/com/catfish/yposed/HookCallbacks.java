@@ -9,11 +9,11 @@ public class HookCallbacks {
         Object receiver = HookManager.retrieveReceiver(this, false);
         Log.e(TAG, "hook victim called: " + receiver + ", a=" + a + ", b=" + b + ", c=" + c);
         safe();
-        return (Long) HookManager.invokeOriginVirtual("victim", receiver, a, b, c);
+        return (Long) HookManager.invokeOrigin("victim", receiver, a, b, c);
     }
 
     private void safe() {
-        Log.e(TAG, "safe", new Exception());
+        Log.e(TAG, "safe");
         System.gc();
     }
 }

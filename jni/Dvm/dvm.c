@@ -1,14 +1,48 @@
 #include "dvm.h"
 #include "dvm_helper.h"
 
-static void hook_yposed_method(JNIEnv* env, jobject thiz, jobject method_origin, jobject method_proxy, jboolean is_static) {
+static int gInsns = 32;
+static int gRegistersSize = 10;
+static int gOutsSize = 12;
+static int gInsSize = 14;
+static int gMethodSize = 60;
+
+static void dvm_doHook(void* origin, void* proxy) {
+	int* ori_code_item = (int*)(origin + gInsns);
+	int* pro_code_item = (int*)(proxy + gInsns);
+	int code_temp = *ori_code_item;
+	*ori_code_item = *pro_code_item;
+
+	int* ori_register = (int*)(origin + gRegistersSize);
+	int* pro_register = (int*)(proxy + gRegistersSize);
+	int register_temp = *ori_register;
+	*ori_register = *pro_register;
+
+	int* ori_out = (int*)(origin + gOutsSize);
+	int* pro_out = (int*)(proxy + gOutsSize);
+	int out_temp = *ori_out;
+	*ori_out = *pro_out;
+
+	int* ori_size = (int*)(origin + gInsSize);
+	int* pro_size = (int*)(proxy + gInsSize);
+	int size_temp = *ori_size;
+	*ori_size = *pro_size;
+
+	memcpy(proxy, origin, gMethodSize);
+	*pro_code_item = code_temp;
+	*pro_register = register_temp;
+	*pro_out = out_temp;
+	*pro_size = size_temp;
+}
+
+static void hook_yposed_method(JNIEnv* env, jobject thiz, jobject method_origin, jobject method_proxy) {
 	jmethodID meth_ori = (*env)->FromReflectedMethod(env, method_origin);
 	jmethodID meth_pro = (*env)->FromReflectedMethod(env, method_proxy);
 	dvm_doHook(meth_ori, meth_pro);
 }
 
 static JNINativeMethod gMethods[] = {
-		{ "hookYposedMethod", "(Ljava/lang/reflect/Method;Ljava/lang/reflect/Method;Z)V", (void*) hook_yposed_method },
+		{ "hookYposedMethod", "(Ljava/lang/reflect/Method;Ljava/lang/reflect/Method;)V", (void*) hook_yposed_method },
 		};
 
 
@@ -26,6 +60,6 @@ static int registerNativeMethods(JNIEnv* env, const char* className,
 }
 
 void dvm_jni_onload(JNIEnv* env) {
-	LOGD("use dvm");
 	registerNativeMethods(env, JNIHOOK_CLASS, gMethods, sizeof(gMethods) / sizeof(gMethods[0]));
+	init_dvm(env);
 }

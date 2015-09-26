@@ -18,10 +18,10 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         HookManager.registerCallbackClass(HookCallbacks.class);
-        Method m;
         try {
-            m = getClass().getDeclaredMethod("victim", int.class, long.class, char.class);
+            Method m = getClass().getDeclaredMethod("victim", int.class, long.class, char.class);
             HookManager.replaceMethod(m, "victim");
         } catch (NoSuchMethodException e) {
             Log.e(TAG, e.toString());
@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
     }
 
     private long victim(int a, long b, char c) {
-        Log.d(TAG, "victim");
+        Log.d(TAG, "victim: " + this);
         return b;
     }
 

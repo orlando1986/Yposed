@@ -1,7 +1,7 @@
 #include "art.h"
 #include "art_helper.h"
 
-static void hook_yposed_method(JNIEnv* env, jobject thiz, jobject method_origin, jobject method_proxy, jboolean is_static) {
+static void hook_yposed_method(JNIEnv* env, jobject thiz, jobject method_origin, jobject method_proxy) {
 	jmethodID meth_ori = (*env)->FromReflectedMethod(env, method_origin);
 	jmethodID meth_pro = (*env)->FromReflectedMethod(env, method_proxy);
 	switchQuickToInterpret(meth_ori);
@@ -11,7 +11,7 @@ static void hook_yposed_method(JNIEnv* env, jobject thiz, jobject method_origin,
 }
 
 static JNINativeMethod gMethods[] = {
-		{ "hookYposedMethod", "(Ljava/lang/reflect/Method;Ljava/lang/reflect/Method;Z)V", (void*) hook_yposed_method },
+		{ "hookYposedMethod", "(Ljava/lang/reflect/Method;Ljava/lang/reflect/Method)V", (void*) hook_yposed_method },
 		};
 
 
