@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.widget.TextView;
 
 import com.catfish.yposed.HookCallbacks;
 import com.catfish.yposed.HookManager;
@@ -26,16 +26,13 @@ public class MainActivity extends Activity {
         } catch (NoSuchMethodException e) {
             Log.e(TAG, e.toString());
         }
+
+        ((TextView) findViewById(R.id.text)).setText(victim(1, 1234567890987654321l, 'c'));
     }
 
-    public void onClick(View view) {
-        Log.d(TAG, "onClick");
-        Log.d(TAG, "get: " + victim(1, 123456789098765432l, 'x'));
-    }
-
-    private long victim(int a, long b, char c) {
+    private String victim(int a, long b, char c) {
         Log.d(TAG, "victim: " + this);
-        return b;
+        return "test";
     }
 
 }
