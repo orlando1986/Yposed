@@ -11,7 +11,7 @@ static void hook_yposed_method(JNIEnv* env, jobject thiz, jobject method_origin,
 }
 
 static JNINativeMethod gMethods[] = {
-		{ "hookYposedMethod", "(Ljava/lang/reflect/Method;Ljava/lang/reflect/Method)V", (void*) hook_yposed_method },
+		{ "hookYposedMethod", "(Ljava/lang/reflect/Method;Ljava/lang/reflect/Method;)V", (void*) hook_yposed_method },
 		};
 
 

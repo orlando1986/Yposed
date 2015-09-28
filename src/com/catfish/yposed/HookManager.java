@@ -11,15 +11,16 @@ public class HookManager {
     private static final String TAG = "catfish";
     private static Class<?> sCallbackClass = null;
     private static Map<String, Method> sMethodCache = new HashMap<String, Method>();
-    private static String sLib = "libdvm.so";
+    private static int sVersion = -1;
 
     static {
         System.loadLibrary("hook");
 
+        String lib = "";
         try {
             Class<?> properties = Class.forName("android.os.SystemProperties");
             Method get = properties.getDeclaredMethod("get", String.class, String.class);
-            sLib = (String) get.invoke(null, "persist.sys.dalvik.vm.lib", sLib);
+            lib = (String) get.invoke(null, "persist.sys.dalvik.vm.lib", lib);
         } catch (ClassNotFoundException e) {
             Log.e(TAG, e.toString());
         } catch (NoSuchMethodException e) {
@@ -32,19 +33,16 @@ public class HookManager {
             Log.e(TAG, e.toString());
         }
 
-        int version = -1;
-        if ("libdvm.so".equals(sLib)) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT) {
             // dalvik vm
-        } else if (android.os.Build.VERSION.RELEASE.startsWith("4.4")) {
-            version = 0;
+        } else if (android.os.Build.VERSION.RELEASE.startsWith("4.4") && "libart.so".equals(lib)) {
+            sVersion = 0;
         } else if (android.os.Build.VERSION.RELEASE.startsWith("5.0")) {
-            version = 1;
+            sVersion = 1;
         } else if (android.os.Build.VERSION.RELEASE.startsWith("5.1")) {
-            version = 2;
-        } else {
-            throw new RuntimeException("don't know what vm is");
+            sVersion = 2;
         }
-        initVM(version);
+        initVM(sVersion);
     }
 
     public static void registerCallbackClass(Class<?> callback) {
@@ -78,7 +76,7 @@ public class HookManager {
         if (methodName == null) {
             throw new RuntimeException(methodName + " has not been used to hook, please verify");
         }
-        if ("libdvm.so".equals(sLib)) {
+        if (sVersion < 0) {
             return invokeDvmMethod(m, receiver, args, m.getParameterTypes(), m.getReturnType());
         }
         try {
